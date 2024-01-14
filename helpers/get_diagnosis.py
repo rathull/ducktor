@@ -72,6 +72,6 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     messages = client.beta.threads.messages.list(
         thread_id=thread.id
     )
-    res['diagnosis'] = (messages.data[0].content[0].text.value + ' (._.)').title()
+    res['diagnosis'] = (messages.data[0].content[0].text.value).title()
     
     return res

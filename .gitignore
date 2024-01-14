@@ -3,6 +3,9 @@
 __pycache__
 ideahacks-server-firebase-adminsdk-sjvbq-8a58179e05.json
 ideahacks.pem
+aws.key
+helpers/__pycache__/
+helpers/resources/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

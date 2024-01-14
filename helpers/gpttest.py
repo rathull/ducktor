@@ -56,11 +56,11 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
 
     print(f'Total time: {time.time() - start}')
     res = res.split('.', 1)
-    return {
-        'diagnosis': res[0],
-        'description': res[1]
+    res = {
+        'description': res[1].title()
     }
     
+    # Send second
 
 
 # input_text = input('Explain your symptoms: ')

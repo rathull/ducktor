@@ -28,7 +28,7 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant.id,
-        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition ) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show extreme level of empathy and remind them that this data is private and end-to-end encrypted.'
+        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show extreme level of empathy and remind them that this data is private and end-to-end encrypted.'
     )
     # Once you finish crafting this response, make sure the very first part of it is the condition name followed by a period.
     
@@ -46,8 +46,32 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     messages = client.beta.threads.messages.list(
         thread_id=thread.id
     )
-    res = messages.data[0].content[0].text.value.split('.', 1)
-    return {
-        'diagnosis': res[0],
-        'description': res[1].title()
+    res = {
+        'description': messages.data[0].content[0].text.value
     }
+    
+    # Send another message to get the diagnosis
+    message = client.beta.threads.messages.create(
+            thread_id=thread.id,
+            role='user',
+            content='Now just give me the condition name followed by a :('
+    )
+    run = client.beta.threads.runs.create(
+        thread_id=thread.id,
+        assistant_id=assistant.id,
+        instructions='Provide the condition name followed by :('
+    )
+    # Await response
+    while run.status in ['queued', 'in_progress']:
+        run = client.beta.threads.runs.retrieve(
+            thread_id = thread.id,
+            run_id = run.id
+        )
+        print(f'Run status: {run.status}')
+        time.sleep(0.1)
+    messages = client.beta.threads.messages.list(
+        thread_id=thread.id
+    )
+    res['diagnosis'] = messages.data[0].content[0].text.value
+    
+    return res

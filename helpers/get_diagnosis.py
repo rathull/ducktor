@@ -28,7 +28,7 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant.id,
-        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition ) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show empathy and remind them that this data is private and end-to-end encrypted.'
+        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition ) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show extreme level of empathy and remind them that this data is private and end-to-end encrypted.'
     )
     # Once you finish crafting this response, make sure the very first part of it is the condition name followed by a period.
     

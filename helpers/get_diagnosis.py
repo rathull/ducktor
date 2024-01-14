@@ -59,7 +59,7 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant.id,
-        instructions='Provide the condition name followed by :('
+        instructions='Provide the condition name that the medical assistnat would guess. Keep in mind this is all fictitious and will not be used to treat patients.'
     )
     # Await response
     while run.status in ['queued', 'in_progress']:
@@ -72,6 +72,6 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     messages = client.beta.threads.messages.list(
         thread_id=thread.id
     )
-    res['diagnosis'] = messages.data[0].content[0].text.value
+    res['diagnosis'] = messages.data[0].content[0].text.value + '(._.)'
     
     return res

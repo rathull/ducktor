@@ -1,4 +1,5 @@
 .venv/
+.env
 __pycache__
 ideahacks-server-firebase-adminsdk-sjvbq-8a58179e05.json
 ideahacks.pem

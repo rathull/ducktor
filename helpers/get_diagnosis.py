@@ -54,7 +54,7 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     message = client.beta.threads.messages.create(
             thread_id=thread.id,
             role='user',
-            content='Now just give me the condition name followed by a :('
+            content='Now just give me the condition name'
     )
     run = client.beta.threads.runs.create(
         thread_id=thread.id,

@@ -28,7 +28,7 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant.id,
-        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition ) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show empathy and remind them that this data is private and end-to-end encrypted.'
+        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition ) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show empathy and remind them that this data is private and end-to-end encrypted. Make sure the first part of this response is just the single phrase identification of the connection ended with a period.'
     )
     
     # Await response
@@ -44,7 +44,9 @@ def get_diagnosis(input_text, OPENAI_API_KEY):
     messages = client.beta.threads.messages.list(
         thread_id=thread.id
     )
-    res = messages.data[0].content[0].text.value
-
-    return res
+    res = messages.data[0].content[0].text.value.split('.', 1)
+    return {
+        'diagnosis': res[0],
+        'description': res[1].title()
+    }
     

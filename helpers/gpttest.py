@@ -1,15 +1,16 @@
 import time
 import os
+from dotenv import load_dotenv
 from openai import OpenAI
 
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+# OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 # print(f'API key: {OPENAI_API_KEY}')
 
-client = OpenAI()
 
-def get_diagnosis(input_text):
+def get_diagnosis(input_text, OPENAI_API_KEY):
     start = time.time()
     # print(f'Time to create connect to client: {time.time() - start}')
+    client = OpenAI()
 
     assistant = client.beta.assistants.create(
             name='Medical Assistant',
@@ -30,7 +31,7 @@ def get_diagnosis(input_text):
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id=assistant.id,
-        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition ) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show empathy and remind them that this data is private and end-to-end encrypted.'
+        instructions='Please give an initial and brief diagnosis (about 4-5 sentences covering the medical condition ) for this patient in a manner that they could understand, with a brief suggestion of home remedies they could use if applicable to the symptoms. A doctor will follow up on this diagnosis. Briefly show empathy and remind them that this data is private and end-to-end encrypted. Make sure the first part of this response is just the single phrase identification of the connection ended with a period.'
     )
 
     while run.status in ['queued', 'in_progress']:
@@ -50,16 +51,21 @@ def get_diagnosis(input_text):
     )
 
     res = messages.data[0].content[0].text.value
-    # print(f'Response type: {type(res)}')
+    
     # print(res)
 
     print(f'Total time: {time.time() - start}')
-    return res
+    res = res.split('.', 1)
+    return {
+        'diagnosis': res[0],
+        'description': res[1]
+    }
     
 
 
 # input_text = input('Explain your symptoms: ')
-input_text = input('Symptoms: ')
-# 'ow my head hurts and i cant think straight and all i see is white dots. please help me everything hurts i dont know what to do. im going to cry'
-res = get_diagnosis(input_text)
+# input_text = input('Symptoms: ')
+input_text = 'ow my head hurts and i cant think straight and all i see is white dots. please help me everything hurts i dont know what to do. im going to cry'
+load_dotenv()
+res = get_diagnosis(input_text, os.environ.get('OPENAI_API_KEY'))
 print(res)
